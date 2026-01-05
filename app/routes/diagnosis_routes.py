@@ -174,6 +174,15 @@ def predict():
         print(f"Error en predicción: {e}")
         return {"error": "Error interno durante el procesamiento"}, 500
 
+
+@diagnosis_bp.route("/health", methods=["GET"])
+def health_check():
+    from app.ml.covid_predictor import MODEL
+    return jsonify({
+        "status": "healthy",
+        "model_loaded": MODEL is not None
+    })
+
 @diagnosis_bp.route("/patient/<int:patient_id>", methods=["GET"])
 @jwt_required()
 def get_patient_history(patient_id):
