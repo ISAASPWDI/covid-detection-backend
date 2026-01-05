@@ -10,8 +10,12 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app, resources={r"/api/*": {"origins": "*"}}) # cambiar en producción
-
+    # cors.init_app(app, resources={r"/api/*": {"origins": "*"}}) # development
+    cors.init_app(app, resources={
+    r"/api/*": {
+        "origins": ["https://covid-detection-app.netlify.app/", "http://localhost:3000"]
+    } #production
+})
 
 
     from app import models  
