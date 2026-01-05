@@ -49,7 +49,7 @@ def get_diagnoses():
     if date_to:
         query = query.filter(Diagnosis.created_at <= date_to)
 
-    # Ordenar por defecto descendente
+
     query = query.order_by(Diagnosis.id.desc())
 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
@@ -59,7 +59,7 @@ def get_diagnoses():
     data = []
     
     for d in diagnoses:
-        # Obtener nombre del paciente si es posible
+   
         patient_name = d.patient.full_name if d.patient else "Desconocido"
         
         data.append({
@@ -82,7 +82,7 @@ def get_diagnoses():
 @diagnosis_bp.route("/predict", methods=["POST"])
 @jwt_required()
 def predict():
-    # 1️⃣ Validar datos básicos
+
     if "image" not in request.files:
         return {"error": "No image provided"}, 400
     
@@ -94,14 +94,14 @@ def predict():
         
     doctor_id = get_jwt_identity()
 
-    # Verificar que el paciente exista
+
     patient = Patient.query.get(patient_id)
     if not patient:
         return {"error": "Paciente no encontrado"}, 404
 
     image = request.files["image"]
 
-    # Preparar carpetas
+
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     os.makedirs(HEATMAP_FOLDER, exist_ok=True)
 
@@ -109,20 +109,20 @@ def predict():
     image_path = os.path.join(UPLOAD_FOLDER, filename)
     heatmap_path = os.path.join(HEATMAP_FOLDER, filename)
     
-    # Guardar imagen original
+
     image.save(image_path)
 
-    #  Lógica de Predicción según enfermedad
+
     label = "Desconocido"
     confidence = 0.0
     
-    # Rutas relativas para DB
+
     db_image_path = f"uploads/x-ray/{filename}"
     db_heatmap_path = f"heatmap/{filename}"
 
     try:
         if disease_type.upper() == "COVID":
-            # Predicción REAL
+
             if TF_AVAILABLE:
                 label, confidence = predict_image(image_path, heatmap_path)
             else:
@@ -132,7 +132,7 @@ def predict():
                 shutil.copy(image_path, heatmap_path)
         
         elif disease_type.upper() in ["IRA", "EDA", "HIPERTENSION", "DIABETES"]:
-            # --- MOCK / SIMULACIÓN ---
+   
             import shutil
             shutil.copy(image_path, heatmap_path)
             

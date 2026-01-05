@@ -83,29 +83,28 @@ def update_profile():
         return jsonify({"error": "La cuenta del doctor está desactivada"}), 403
 
     data = request.get_json()
-    
-    # Actualizar nombre completo
+
     if 'full_name' in data:
         doctor.full_name = data['full_name']
     
-    # Actualizar email (verificar que no esté en uso)
+
     if 'email' in data and data['email'] != doctor.email:
         existing_doctor = Doctor.query.filter_by(email=data['email']).first()
         if existing_doctor:
             return jsonify({"detail": "El email ya está en uso"}), 400
         doctor.email = data['email']
     
-    # Cambiar contraseña si se proporciona
+
     if 'new_password' in data and data['new_password']:
-        # Verificar que se proporcione la contraseña actual
+
         if 'current_password' not in data or not data['current_password']:
             return jsonify({"detail": "Debe proporcionar la contraseña actual"}), 400
         
-        # Verificar que la contraseña actual sea correcta
+
         if not check_password_hash(doctor.password, data['current_password']):
             return jsonify({"detail": "La contraseña actual es incorrecta"}), 400
         
-        # Actualizar con la nueva contraseña
+
         doctor.password = generate_password_hash(data['new_password'])
         
     try:

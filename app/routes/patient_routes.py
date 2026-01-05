@@ -96,7 +96,7 @@ def update_patient(id):
         patient.age = data['age']
     if 'gender' in data:
         patient.gender = data['gender']
-    # DNI generalmente no se cambia, pero se puede agregar si es necesario
+
 
     try:
         db.session.commit()

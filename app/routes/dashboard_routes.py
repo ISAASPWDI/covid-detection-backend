@@ -13,7 +13,7 @@ dashboard_bp = Blueprint('dashboard', __name__)
 def get_dashboard_summary():
     doctor_id = get_jwt_identity()
     
-    # --- 1. Pacientes ---
+
     total_patients = Patient.query.filter_by(doctor_id=doctor_id).count()
     male_patients = Patient.query.filter_by(doctor_id=doctor_id, gender='M').count()
     female_patients = Patient.query.filter_by(doctor_id=doctor_id, gender='F').count()
@@ -22,7 +22,7 @@ def get_dashboard_summary():
     avg_age_query = db.session.query(func.avg(Patient.age)).filter_by(doctor_id=doctor_id).scalar()
     average_age = int(avg_age_query) if avg_age_query else 0
 
-    # --- 2. Diagnósticos ---
+
     total_diagnoses = Diagnosis.query.filter_by(doctor_id=doctor_id).count()
     covid_positive = Diagnosis.query.filter_by(doctor_id=doctor_id, result='COVID').count()
     covid_negative = Diagnosis.query.filter_by(doctor_id=doctor_id, result='NORMAL').count()
@@ -32,7 +32,7 @@ def get_dashboard_summary():
     else:
         positive_rate = 0
 
-    # --- 3. Actividad Reciente (Últimos 7 días) ---
+
     seven_days_ago = datetime.utcnow() - timedelta(days=7)
     recent_diagnoses_count = Diagnosis.query.filter_by(doctor_id=doctor_id)\
         .filter(Diagnosis.created_at >= seven_days_ago).count()

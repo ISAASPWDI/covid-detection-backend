@@ -13,7 +13,7 @@ def create_app():
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}}) # cambiar en producción
 
 
-    # 👇 ESTA LÍNEA ES OBLIGATORIA
+
     from app import models  
 
     MEDIA_ROOT = os.path.join(os.getcwd(), "media")
